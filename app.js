@@ -1,60 +1,9 @@
 const inquirer = require('inquirer');
-const fs = require('fs');
-const generatePage = require('./src/page-template');
 
-// development mock data and function for testing
-const mockData = {
-    name: 'Lernantino',
-    github: 'lernantino',
-    confirmAbout: true,
-    about:
-        'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque. Nulla eget fringilla nulla. Integer gravida magna mi, id efficitur metus tempus et.',
-    projects: [
-        {
-            name: 'Run Buddy',
-            description:
-                'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque. Nulla eget fringilla nulla. Integer gravida magna mi, id efficitur metus tempus et. Nam fringilla elit dapibus pellentesque cursus.',
-            languages: ['HTML', 'CSS'],
-            link: 'https://github.com/lernantino/run-buddy',
-            feature: true,
-            confirmAddProject: true
-        },
-        {
-            name: 'Taskinator',
-            description:
-                'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque. Nulla eget fringilla nulla. Integer gravida magna mi, id efficitur metus tempus et. Nam fringilla elit dapibus pellentesque cursus.',
-            languages: ['JavaScript', 'HTML', 'CSS'],
-            link: 'https://github.com/lernantino/taskinator',
-            feature: true,
-            confirmAddProject: true
-        },
-        {
-            name: 'Taskmaster Pro',
-            description:
-                'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque. Nulla eget fringilla nulla. Integer gravida magna mi, id efficitur metus tempus et. Nam fringilla elit dapibus pellentesque cursus.',
-            languages: ['JavaScript', 'jQuery', 'CSS', 'HTML', 'Bootstrap'],
-            link: 'https://github.com/lernantino/taskmaster-pro',
-            feature: false,
-            confirmAddProject: true
-        },
-        {
-            name: 'Robot Gladiators',
-            description:
-                'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque.',
-            languages: ['JavaScript'],
-            link: 'https://github.com/lernantino/robot-gladiators',
-            feature: false,
-            confirmAddProject: false
-        }
-    ]
-};
+const { writeFile, copyFile } = require('./utils/generate-site.js');
+const generatePage = require('./src/page-template.js');
 
-// fs.writeFile('./index.html', pageHTML, err => {
-//     if (err) throw new Error(err);
-
-//     console.log('Portfolio complete! Check out index.html to see the output.')
-// });
-
+// prompt user for user info
 const promptUser = () => {
     return inquirer.prompt([
         {
@@ -98,6 +47,7 @@ const promptUser = () => {
     ]);
 };
 
+// prompt user for project info
 const promptProject = portfolioData => {
     console.log(`
     =================
@@ -179,15 +129,30 @@ const promptProject = portfolioData => {
         });
 };
 
+// execute
+// ask for user answers, returns data as object in a promise
 promptUser()
+    // capture the returning data and recursively call prject func until user is done with data entry
+    // projects pushed into project array in collection of portfolio info
     .then(promptProject)
+    // completed set of data returned and passed to generate page
     .then(portfolioData => {
-        const pageHTML = generatePage(portfolioData);
-
-        fs.writeFile('./index.html', pageHTML, err => {
-            if (err) throw new Error(err);
-            console.log('Page created! Check out index.html in this directory to see it!');
-        });
-    });
-
-    // const pageHTML = generatePage(mockData);
+        return generatePage(portfolioData);
+    })
+    // returns result of generate page from data gathered (first promise obj), pass to write file module and return results
+    .then(pageHTML => {
+        return writeFile(pageHTML);
+    })
+    // log the response obj from writeFile promise's resolve, return the function to copy file
+    .then(writeFileResponse => {
+        console.log(writeFileResponse);
+        return copyFile();
+    })
+    // log the response of our copyFile promise resolve obj
+    .then(copyFileResponse => {
+        console.log(copyFileResponse);
+    })
+    // if error AT ANY POINT, log err and promise chain fails
+    .catch(err => {
+        console.log(err);
+    })

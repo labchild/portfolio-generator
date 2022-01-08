@@ -1,14 +1,15 @@
 // create the about section
 const generateAbout = aboutText => {
-    //if user doesn't want to include about section
+    // if user doesn't want to include about section
     if (!aboutText) {
         return '';
     }
 
     // if user want to include about section
     return `
-    <section class="text-dark bg-primary p-2 display-inline-block">About
-    <p>${aboutText}</p>
+    <section class="text-dark p-2 display-inline-block">
+        <h2 class="bg-primary">About</h2>
+        <p>${aboutText}</p>
     </section>
     `;
 };
@@ -28,7 +29,7 @@ const generateProjects = projectsArr => {
                         <h3 class="portfolio-item-title text-light">${name}</h3>
                         <h5 class="portfolio-languages">
                             Built With:
-                            ${languages.join('')}
+                            ${languages.join(', ')}
                         </h5>
                         <p>${description}</p>
                         <a href="${link}" target="_blank" class="btn mt-auto">
@@ -50,7 +51,7 @@ const generateProjects = projectsArr => {
                         ${languages.join(', ')}
                     </h5>
                     <p>${description}</p>
-                    <a href="${link}" target="_blank" class="mt-auto">
+                    <a href="${link}" target="_blank" class="btn mt-auto">
                         <i class="fab fa-github mr-2"></i>View project on GitHub
                     </a>
                 </div>
@@ -61,70 +62,6 @@ const generateProjects = projectsArr => {
     </section>
     `;
 };
-
-/* const generateProjects = projectsArr => {
-    // get array of featured projects only
-    const featuredProjects = projectsArr.filter(project => {
-        if (project.feature) {
-            return true;
-        } else {
-            return false;
-        }
-    });
-
-    // get array of non-featured projects only
-    const nonFeaturedProjects = projectsArr.filter(project => {
-        if (!project.feature) {
-            return true;
-        } else {
-            return false;
-        }
-    });
-
-    const featuredProjectHtmlArr = featuredProjects.map(({ name, description, languages, link }) => {
-        return `
-            <div class="col-12 mb-2 bg-dark text-light p-3 flex-column">
-                <h3 class="portfolio-item-title text-light">${name}</h3>
-                <h5 class="portfolio-languages">
-                    Built With:
-                    ${languages.join(', ')}
-                </h5>
-                <p>${description}</p>
-                <a href="${link}" target="_blank" class="btn mt-auto">
-                    <i class="fab fa-github mr-2"></i>
-                    GitHub
-                </a>
-            </div>
-        `;
-    });
-
-    const nonFeaturedProjectHtmlArr = nonFeaturedProjects.map(({ name, description, languages, link }) => {
-        return `
-            <div class="col-12 col-md-6 mb-2 bg-dark text-light p-3 flex-column">
-                <h3 class="portfolio-item-title text-light">${name}</h3>
-                <h5 class="portfolio-languages">
-                    Built With:
-                    ${languages.join(', ')}
-                </h5>
-                <p>${description}</p>
-                <a href="${link}" target="_blank" class="btn mt-auto">
-                    <i class="fab fa-github mr-2"></i>
-                    GitHub
-                </a>
-            </div>
-        `;
-    });
-
-    return `
-    <section class="my-3" id="portfolio">
-        <h2 class="text-dark bg-primary p-2 display-inline-block">Work</h2>
-        <div class="flex-row justify-space-between">
-            ${featuredProjectHtmlArr.join('')}
-            ${nonFeaturedProjectHtmlArr.join('')}
-        </div>
-    </section>
-    `;
-}; */
 
 module.exports = templateData => {
     //destructure the data by section
@@ -142,7 +79,7 @@ module.exports = templateData => {
     <title>Portfolio Demo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Public+Sans:300i,300,500&display=swap">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
 
   <body>
